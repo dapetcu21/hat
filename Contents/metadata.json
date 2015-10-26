@@ -1,0 +1,19 @@
+{
+	"identifier": "ro.hat-app.app.Hat",
+	"name": "Hat",
+	"version": "0.0.1",
+	"author": "Hack All TVs",
+	"company": "Hack All TVs",
+	"copyright": "Hack All TVs",
+	"description": "A game for people who enjoy hats",
+	"categories": [
+		"games"
+	],
+	"scripts": "Javascript/init.js",
+	"images": {
+		"about": "Images/Icon.png",
+		"icon": {
+			"192x192": "Images/Icon.png"
+		}
+	}
+}
