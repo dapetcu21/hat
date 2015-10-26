@@ -2,10 +2,10 @@ function setup(track) {
 
   /**/
   track
-    //.rest("half")
-    //.rest("quarter")
-    //.rest("eighth")
-    //.repeatStart()
+    // .rest("half")
+    // .rest("quarter")
+    // .rest("eighth")
+    // .repeatStart()
     .note("sixteenth", "Bb2")
     .note("sixteenth", "Bb2")
     .note("eighth", "Bb2")
@@ -202,7 +202,7 @@ function setup(track) {
     .note("eighth", "A3")
     .note("eighth", "Bb3")
 
-  //track.repeat(100);
+  // track.repeat(100);
 
   return;
 

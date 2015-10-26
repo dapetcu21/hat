@@ -37,4 +37,4 @@ function Die() {
   return fxplayer;
 }
 
-setTimeout(Music, 0);
+Music();
