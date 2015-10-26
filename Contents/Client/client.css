@@ -52,67 +52,67 @@ body {
 
 .up-arrow {
   position: absolute;
-  height: 12vh;
-  width: 6vw;
+  height: 16vh;
+  width: 9vw;
   background-color: grey; 
-  top: 9vw;
-  left: 10.7vw;
+  top: 14vw;
+  left: 16.7vw;
   text-align: center;
 }
 
 .right-arrow {
   position: absolute;
-  height: 12vh;
+  height: 16vh;
   background-color: grey; 
-  width: 6vw;
-  top: 15.5vw;
-  left: 17.5vw;
+  width: 9vw;
+  top: 24.2vw;
+  left: 26.5vw;
   text-align: center;
 }
 
 .down-arrow {
   position: absolute;
-  height: 12vh;
+  height: 16vh;
   background-color: grey; 
-  width: 6vw;
-  top: 22vw;
-  left: 10.7vw;
+  width: 9vw;
+  top: 34.5vw;
+  left: 16.4vw;
   text-align: center;
 }
 
 .left-arrow {
   position: absolute;
-  height: 12vh;
+  height: 16vh;
   background-color: grey; 
-  width: 6vw;
-  top: 15.5vw;
-  left: 4vw;
+  width: 9vw;
+  top: 24.2vw;
+  left: 6.5vw;
   text-align: center;
 }
 
 .remote-start {
   position: absolute;
-  height: 9vh;
-  width: 11vw;
+  height: 14vh;
+  width: 18vw;
   background-color: grey;
-  top: 8.5vw;
-  left: 27.4vw;
+  top: 12.8vw;
+  left: 41.4vw;
 }
 
 .a-button {
   position: absolute;
-  height: 17.5vh;
-  width: 8.5vw;
+  height: 26.5vh;
+  width: 13.5vw;
   background-color: grey;
-  top: 8.5vw;
-  left: 53.2vw;
+  top: 13vw;
+  left: 81.2vw;
 }
 
 .b-button {
   position: absolute;
-  height: 17.5vh;
-  width: 8.5vw;
+  height: 26.5vh;
+  width: 13.5vw;
   background-color: grey;
-  top: 19.6vw;
-  left: 42.1vw;
+  top: 30.1vw;
+  left: 64.1vw;
 }
