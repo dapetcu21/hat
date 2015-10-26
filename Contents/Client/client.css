@@ -4,6 +4,7 @@ html {
   -ms-user-select: none;
   user-select: none;
   -o-user-select: none;
+  background-color: #1a1f1d;
 }
 
 * {
@@ -29,13 +30,13 @@ body {
   overflow: hidden;
 }
 
-.remote {
+#remote {
   position: absolute;
   width: 100%;
   bottom: 0;
 }
 
-.remote img {
+#remote img {
   width: 100%;
 }
 

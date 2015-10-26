@@ -8,6 +8,7 @@
   var room = new MAF.Room(),
       $remote = $('#remote'),
       player = null,
+      isFullscreen = false,
       vibration = 200;
 
   var colors = [
@@ -25,6 +26,7 @@
     "a": [],
     "b": [],
     "s": [],
+    "f": [],
   }
 
   var buttonMap = {
@@ -80,17 +82,36 @@
     vibration = false;
   }
 
-  function fullscreen(element) {
+  function fullscreen() {
 
-    if(element.requestFullscreen) {
-      element.requestFullscreen();
-    } else if(element.mozRequestFullScreen) {
-      element.mozRequestFullScreen();
-    } else if(element.webkitRequestFullscreen) {
-      element.webkitRequestFullscreen();
-    } else if(element.msRequestFullscreen) {
-      element.msRequestFullscreen();
+    element = document.documentElement;
+
+    if (isFullscreen) {
+
+      if(document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if(document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else if(document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      }
+
+      isFullscreen = false;
+    } else {
+
+      if(element.requestFullscreen) {
+        element.requestFullscreen();
+      } else if(element.mozRequestFullScreen) {
+        element.mozRequestFullScreen();
+      } else if(element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen();
+      } else if(element.msRequestFullscreen) {
+        element.msRequestFullscreen();
+      }
+
+      isFullscreen = true;
     }
+
   }
 
   function send(data) {
@@ -100,11 +121,17 @@
   function getCoord(btn) {
 
     var coord = buttonMap[btn];
-    var $img = $('#remote');
+    var $doc = $(document);
 
     return {
-      ul: {x: coord.ul.x, y: coord.ul.y * $img.height() + $img.offset().top},
-      dr: {x: coord.dr.x, y: coord.dr.y * $img.height() + $img.offset().top},
+      ul: {
+        x: coord.ul.x / 100 * $doc.width(),
+        y: coord.ul.y / 100 * $remote.height() + $remote.offset().top
+      },
+      dr: {
+        x: coord.dr.x / 100 * $doc.width(),
+        y: coord.dr.y / 100 * $remote.height() + $remote.offset().top
+      },
     }
   }
 
@@ -112,38 +139,63 @@
 
     var buttons = [];
 
-    Object.keys(map).forEach(function(k) {
+    Object.keys(buttonMap).forEach(function(k) {
 
       var btn = getCoord(k);
-      var imgy = $remote.cli
 
       if (
-        btn.ul.y < touch.clientX
-        && btn.dr.y > touch.clientY
+        btn.ul.y < touch.clientY && btn.dr.y > touch.clientY
+        && btn.ul.x < touch.clientX && btn.dr.x > touch.clientX
       ) {
-
+        buttons.push(k);
       }
 
     });
 
+    return buttons;
   }
 
   function handleTouch(e) {
 
-    var changes = [];
-    var tids = [];
     var event = e.originalEvent;
+
+    var active = {
+      "u": [],
+      "d": [],
+      "l": [],
+      "r": [],
+      "a": [],
+      "b": [],
+      "s": [],
+      "f": [],
+    };
 
     vibrate();
     // fullscreen(document.documentElement);
 
-    for(var i in event.touches) {
-      tids.push(event.touches[i].identifier);
+    for (var i in event.touches) {
+      var collided = getCollisions(event.touches[i]);
+      for (var k=0; k<collided.length; k++) {
+        active[collided[k]].push(event.touches[i].identifier);
+      }
     }
 
-    console.log(event);
+    Object.keys(active).forEach(function(k) {
+      if (!!buttons[k].length !== !!active[k].length) {
+        var action = !!active[k].length ? 'bd' : 'bu';
+        console.log('sending: ', { a: action, b: k, p: player });
+        room.send({ a: action, b: k, p: player });
 
-    send(changes);
+        if (action == 'bd') {
+          if (k == 'f') {
+            fullscreen();
+          }
+        }
+
+      }
+    });
+
+    buttons = active;
   }
 
   $remote.on('touchstart touchmove touchend', handleTouch);
