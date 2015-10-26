@@ -11,7 +11,7 @@ const GameView = new MAF.Class({
   Extends: MAF.system.FullscreenView,
 
   // Create your this template
-  createView: function () {
+  createView() {
 
     // Create a Canvas element
     const canvas = new MAF.element.Core({
@@ -26,30 +26,37 @@ const GameView = new MAF.Class({
       styles: {
         vAlign: 'center',
         hAlign: 'center',
-        vOffset: 50,
-        hOffset: 50,
+        vOffset: 130,
       },
     }).appendTo(this);
 
+    qrcode.opacity = 0;
     const renderer = new CanvasRenderer(this.width, this.height, { view: canvas.element });
-    const game = new GameManager(renderer);
-    game.setQRVisible = isVisible => {
-    };
+    const game = new GameManager(renderer, (visible, animate) => {
+      const opacity = visible ? 1 : 0;
+      if (animate) {
+        qrcode.animate({
+          opacity,
+          duration: 0.5,
+        });
+      } else {
+        qrcode.opacity = opacity;
+      }
+    });
 
     const draw = () => {
       if (!this.animating) { return; }
       requestAnimationFrame(draw);
       game.render();
-    }
+    };
 
     this.animating = true;
     draw();
 
     // Create room
-    const room = new MAF.Room(this.ClassName);
+    const room = new MAF.PrivateRoom(this.ClassName);
     this.room = room;
     game.players.room = room;
-    let clients = {};
 
     // Set listeners for Room and Connection
     (function (event) {
@@ -70,15 +77,14 @@ const GameView = new MAF.Class({
           game.players.clear();
           return;
         case 'onJoined':
-          // If user is not the app then log the user
           if (payload.user !== room.user) {
             game.players.joined(payload.user);
           }
           return;
         case 'onHasLeft':
-          // If user is not the app then log the user
-          if (payload.user !== room.user)
+          if (payload.user !== room.user) {
             game.players.left(payload.user);
+          }
           return;
         case 'onData':
           game.players.onData(payload);
@@ -92,14 +98,14 @@ const GameView = new MAF.Class({
     if (room.connected) room.join();
   },
 
-  destroyView: function () {
+  destroyView() {
     this.animating = false;
     if (this.room) {
       this.room.leave();
       this.room.destroy();
       delete this.room;
     }
-  }
+  },
 });
 
 export default GameView;

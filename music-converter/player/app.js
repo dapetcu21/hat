@@ -8,7 +8,7 @@ function Music() {;
 
   var conductor = new BandJS();
   conductor.setTimeSignature(4, 4);
-  conductor.setTempo(180);
+  conductor.setTempo(120);
 
   var track = conductor.createInstrument('square', 'oscillators');
   setup(track);
@@ -37,5 +37,4 @@ function Die() {
   return fxplayer;
 }
 
-setTimeout(soundMusic, 0);
-setTimeout(soundDie, 2000);
+setTimeout(Music, 0);

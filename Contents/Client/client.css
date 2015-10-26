@@ -46,10 +46,6 @@ body {
   width: 100%;
 }
 
-.remote-content {
-  opacity: 0;
-}
-
 .up-arrow {
   position: absolute;
   height: 16vh;

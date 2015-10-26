@@ -1,4 +1,6 @@
 import audio from './audio';
+import { EventEmitter } from 'events';
+import Controls from './Controls';
 
 export default class PlayerManager {
   constructor() {
@@ -11,6 +13,14 @@ export default class PlayerManager {
         wins: 0,
       });
     }
+
+    this.controls = new Controls();
+    this.controls.addListener('buttonDown', (player, button) => {
+      console.log('buttonDown', player, button);
+    });
+    this.controls.addListener('buttonUp', (player, button) => {
+      console.log('buttonUp', player, button);
+    });
   }
 
   clear() {
@@ -31,6 +41,8 @@ export default class PlayerManager {
   }
 
   joined(user) {
+    console.log(this.room.user, this.room.hash);
+    console.log(user);
     let playerId = this._playerForUser(user);
 
     if (playerId === null && !this.inGame) {
@@ -43,6 +55,7 @@ export default class PlayerManager {
     }
 
     if (playerId === null) {
+      this.room.send({ a: 'rf', h: user });
       return;
     }
 
@@ -55,15 +68,23 @@ export default class PlayerManager {
   left(user) {
     const playerId = this._playerForUser(user);
     if (playerId === null) { return; }
-    const player = this.players[playerId];
-    if (!this.inGame) {
-      player.user = null;
-    }
-    player.connected = false;
-    audio.sfx.die.play();
+    let player = this.players[playerId];
+    player = {
+      user: this.inGame ? player.user : null,
+      connected: false,
+      wins: 0,
+    };
+    this.players[playerId] = player;
+    this.controls.playerLeft(playerId);
   }
 
   onData(payload) {
-    console.log('data', payload);
+    const data = payload.data;
+    switch (data.a) {
+      case 'bu':
+      case 'bd':
+        this.controls.setButton(data.p, data.b, data.a === 'bd');
+        break;
+    }
   }
 }
