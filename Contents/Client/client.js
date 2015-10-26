@@ -1,4 +1,10 @@
 (function () {
+
+  $(document).on('click', function(e){
+     console.log("X Axis : " + e.pageX + "px" + " Y Axis : " + e.pageY + "px");
+  });
+
+
   room = new MAF.Room();
   var player = null;
   var color = [
@@ -35,6 +41,8 @@
     room.send({ a: 'bu', b: 'a', p: player });
   });
   
+
+
   // Find the right method, call on correct element
   function launchIntoFullscreen(element) {
     if(element.requestFullscreen) {
@@ -50,5 +58,23 @@
 
   // Launch fullscreen for browsers that support it!
   launchIntoFullscreen(document.documentElement); // the whole page
-    
+
 }());
+
+var f = null;
+var g = null;
+var $w = $('#remote');
+
+function getWidth() {
+  f = $w.width / 640;
+}
+
+function getHeight() {
+  g = $w.height * f;
+}
+
+function yAxis() {
+  var a = x * 640 * 10;
+  var b = y * 335 * 10;
+  return z = g - b;
+}
