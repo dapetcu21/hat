@@ -1,56 +1,95 @@
-import { Container, Text } from 'pixi';
+import { Sprite, Container, Text, loader } from 'pixi';
 
-const marginHorizontal = 52/1366;
-const marginVertical = 57/768;
-const playerWidth = 300/1366;
-const playerHeight = 93/768;
+const marginHorizontal = 52 / 1366;
+const marginVertical = 40 / 768;
+const playerWidth = 300 / 1366;
+const playerHeight = 93 / 768;
 const interPlayerMargin = (1 - 2 * marginHorizontal - 4 * playerWidth) / 3;
+const labelOffsetY = 10 / 768;
+const labelOffsetX = 110 / 1366;
+const winsOffsetX = labelOffsetX;
+const winsOffsetY = 44 / 768;
 
 export default class PlayerBar {
   constructor(manager) {
     this.manager = manager;
     this.container = new Container();
     this.players = [];
-    this.playerLabels = [];
-    this.playerAvatars = [];
-    this.playerWins = [];
 
     const { width, height } = this.manager.renderer;
 
-    for (let i = 0; i < 4; i++) {
-      const player = new Container();
-      player.position.y = (marginVertical) * height;
-      player.position.x = (marginHorizontal + (interPlayerMargin + playerWidth) * i) * width;
+    loader.add('avatar0', 'Images/player-red.png');
+    loader.add('avatar1', 'Images/player-green.png');
+    loader.add('avatar2', 'Images/player-blue.png');
+    loader.add('avatar3', 'Images/player-yellow.png');
+    loader.add('avatarInactive', 'Images/player-inactive.png');
+    loader.load((loader, resources) => {
+      this.loaded = true;
 
-      this.players.push(player);
-      this.container.addChild(player);
+      for (let i = 0; i < 4; i++) {
+        const player = new Container();
+        player.position.y = (marginVertical) * height;
+        player.position.x = (marginHorizontal + (interPlayerMargin + playerWidth) * i) * width;
 
-      console.log(player);
+        this.container.addChild(player);
 
-      const label = new Text(`PLAYER ${i + 1}`, {
-        font: '36px VCR',
-        fill: '#ffffff',
-      });
+        const avatar = new Sprite(resources['avatar' + i].texture);
+        avatar.width = playerHeight * height;
+        avatar.height = playerHeight * height;
+        player.addChild(avatar);
 
-      label.x = 0;
-      label.y = 0;
+        const avatarInactive = new Sprite(resources.avatarInactive.texture);
+        avatarInactive.width = playerHeight * height;
+        avatarInactive.height = playerHeight * height;
+        player.addChild(avatarInactive);
 
-      player.addChild(label);
-      this.playerLabels.push(label);
+        const label = new Text(`PLAYER ${i + 1}`, {
+          font: '40px VCR, arial',
+          fill: '#ffffff',
+        });
 
-      //const wins = new Text('WINS: 0', {
-        //font: 'bold italic 36px Arial',
-        //fill: '#ffffff',
-      //});
+        label.x = labelOffsetX * width;
+        label.y = labelOffsetY * height;
 
-      //wins.x = 0;
-      //wins.y = 0;
+        player.addChild(label);
 
-      //player.addChild(wins);
-      //this.playerWins.push(wins);
-    }
+        const wins = new Text('', {
+          font: '31px VCR, arial',
+          fill: '#aaaaaa',
+        });
+
+        wins.x = winsOffsetX * width;
+        wins.y = winsOffsetY * height;
+
+        player.addChild(wins);
+
+        this.players.push({
+          container: player,
+          avatar,
+          avatarInactive,
+          label,
+          wins,
+        });
+      }
+    });
   }
 
   render() {
+    if (!this.loaded) { return; }
+    const playerSelect = !!this.manager.playerSelect;
+    const pulse = Math.abs(Math.sin(Date.now() / 500));
+
+    for (let i = 0; i < 4; i++) {
+      const playerState = this.manager.players.players[i];
+      const player = this.players[i];
+
+      player.avatar.visible = !!playerState.connected;
+      player.avatarInactive.visible = !playerState.connected;
+
+      player.wins.text = playerState.connected ? playerSelect ? playerState.ready ? 'READY' : 'PRESS START' : `WINS: ${playerState.wins}` : `NOT CONNECTED`;
+      player.wins.style.fill = (playerState.connected && playerSelect && playerState.ready) ? '#1ba24b' : '#aaaaaa';
+      player.wins.alpha = playerState.connected ? (playerSelect && !playerState.ready) ? pulse : 1 : 0.6;
+      player.label.alpha = playerState.connected ? 1 : 1;
+    }
   }
 }
