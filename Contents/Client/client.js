@@ -13,8 +13,8 @@
 
   var colors = [
     "red",
-    "blue",
     "green",
+    "blue",
     "yellow"
   ];
 
@@ -52,7 +52,8 @@
 
       case 'pl':
         player = data.p;
-        $(".player").addClass("player-" + colors[0]);
+        $("#player").addClass("player-" + colors[player]);
+        console.log(data);
         break;
 
       case 'rf':
@@ -196,6 +197,9 @@
     });
 
     buttons = active;
+    e.preventDefault();
+
+    return false;
   }
 
   $remote.on('touchstart touchmove touchend', handleTouch);
@@ -208,21 +212,3 @@
   }, false);
 
 }());
-
-var f = null;
-var g = null;
-var $w = $('#remote');
-
-function getWidth() {
-  f = $w.width / 640;
-}
-
-function getHeight() {
-  g = $w.height * f;
-}
-
-function yAxis() {
-  var a = x * 640 * 10;
-  var b = y * 335 * 10;
-  return z = g - b;
-}

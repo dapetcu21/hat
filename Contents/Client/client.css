@@ -1,22 +1,14 @@
 html {
+  background-color: #1a1f1d;
   -moz-user-select: none; 
   -webkit-user-select: none; 
   -ms-user-select: none;
   user-select: none;
   -o-user-select: none;
-  background-color: #1a1f1d;
-}
-
-* {
-    -webkit-touch-callout:none;                /* prevent callout to copy image, etc when tap to hold */
-    -webkit-text-size-adjust:none;             /* prevent webkit from resizing text to fit */
-    -webkit-tap-highlight-color:rgba(0,0,0,0); /* prevent tap highlight color / shadow */
-    -webkit-user-select:none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
-}
-
-@font-face {
-    font-family: VCR;
-    src: url('../Fonts/vcr_osd_mono_1.001-webfont.ttf');
+  -webkit-touch-callout:none !important;                /* prevent callout to copy image, etc when tap to hold */
+  -webkit-text-size-adjust:none !important;             /* prevent webkit from resizing text to fit */
+  -webkit-tap-highlight-color:rgba(0,0,0,0); /* prevent tap highlight color / shadow */
+  -webkit-user-select:none !important;                  /* prevent copy paste, to allow, change 'none' to 'text' */
 }
 
 body {
