@@ -10,5 +10,10 @@
   "license": "ISC",
   "dependencies": {
     "url-parse": "^1.0.4"
+  },
+  "devDependencies": {
+    "midi-converter": "^0.1.5",
+    "midiutils": "0.0.4",
+    "xml2js": "^0.4.13"
   }
 }
