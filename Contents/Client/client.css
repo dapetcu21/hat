@@ -1,3 +1,11 @@
+html {
+  -moz-user-select: none; 
+  -webkit-user-select: none; 
+  -ms-user-select: none;
+  user-select: none;
+  -o-user-select: none;
+}
+
 @font-face {
     font-family: VCR;
     src: url('../Fonts/vcr_osd_mono_1.001-webfont.ttf');
@@ -54,47 +62,38 @@ body {
   position: absolute;
   height: 16vh;
   width: 9vw;
-  background-color: grey; 
   top: 14vw;
   left: 16.7vw;
-  text-align: center;
 }
 
 .right-arrow {
   position: absolute;
   height: 16vh;
-  background-color: grey; 
   width: 9vw;
   top: 24.2vw;
   left: 26.5vw;
-  text-align: center;
 }
 
 .down-arrow {
   position: absolute;
   height: 16vh;
-  background-color: grey; 
   width: 9vw;
   top: 34.5vw;
   left: 16.4vw;
-  text-align: center;
 }
 
 .left-arrow {
   position: absolute;
   height: 16vh;
-  background-color: grey; 
   width: 9vw;
   top: 24.2vw;
   left: 6.5vw;
-  text-align: center;
 }
 
 .remote-start {
   position: absolute;
   height: 14vh;
   width: 18vw;
-  background-color: grey;
   top: 12.8vw;
   left: 41.4vw;
 }
@@ -103,7 +102,6 @@ body {
   position: absolute;
   height: 26.5vh;
   width: 13.5vw;
-  background-color: grey;
   top: 13vw;
   left: 81.2vw;
 }
@@ -112,7 +110,7 @@ body {
   position: absolute;
   height: 26.5vh;
   width: 13.5vw;
-  background-color: grey;
   top: 30.1vw;
   left: 64.1vw;
 }
+
