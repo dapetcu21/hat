@@ -99,17 +99,11 @@
   function getCoord(btn) {
 
     var coord = buttonMap[btn];
-    var $doc = $(document);
-
-    wr = $doc.width() / 640;
-    hr = $doc.height() * wr;
-
-    var a = x / 100 * 640;
-    var b = y / 100 * 335;
+    var $img = $('#remote');
 
     return {
-      ul: {x: coord.ul.x, y: '?'},
-      dr: {x: '?', y: '?'},
+      ul: {x: coord.ul.x, y: coord.ul.y * $img.height() + $img.offset().top},
+      dr: {x: coord.dr.x, y: coord.dr.y * $img.height() + $img.offset().top},
     }
   }
 
