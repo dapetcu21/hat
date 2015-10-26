@@ -7,10 +7,15 @@
   <title>Remote</title>
   <link rel="stylesheet" href="client.css">
 </head>
-<body>
+<body 
+    oncontextmenu="return false"
+    unselectable="on"
+    onselectstart="return false;" 
+    onmousedown="return false;"
+>
 
   <div class="remote">
-    <div class="player-color player-green hook-player"></div>
+    <div id="player" class="player-color hook-player"></div>
     <div class="remote-content">
       <div class="remote-arrows">
         <div class="up-arrow">&#8593</div>
