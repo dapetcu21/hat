@@ -3,7 +3,7 @@
 import { CanvasRenderer } from 'pixi';
 import GameManager from './GameManager';
 
-MAF.Theme.Fonts.add('VCR', 'Fonts/vcr_osd_mono_1.001-webfont');
+MAF.Theme.Fonts.add('VCR', 'Fonts/VCR');
 
 const GameView = new MAF.Class({
   ClassName: 'GameView',
@@ -46,8 +46,9 @@ const GameView = new MAF.Class({
     draw();
 
     // Create room
-    const room = new MAF.PrivateRoom(this.ClassName);
+    const room = new MAF.Room(this.ClassName);
     this.room = room;
+    game.players.room = room;
     let clients = {};
 
     // Set listeners for Room and Connection

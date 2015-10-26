@@ -1,3 +1,5 @@
+import audio from './audio';
+
 export default class PlayerManager {
   constructor() {
     this.inGame = false;
@@ -54,10 +56,11 @@ export default class PlayerManager {
     const playerId = this._playerForUser(user);
     if (playerId === null) { return; }
     const player = this.players[playerId];
-    if (this.inGame) {
+    if (!this.inGame) {
       player.user = null;
     }
     player.connected = false;
+    audio.sfx.die.play();
   }
 
   onData(payload) {

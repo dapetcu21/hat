@@ -9,6 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "url-parse": "^1.0.4"
+    "babel": "^5.8.29",
+    "babel-loader": "^5.3.2",
+    "babel-runtime": "^5.8.29",
+    "url-parse": "^1.0.4",
+    "webpack": "^1.12.2"
   }
 }
