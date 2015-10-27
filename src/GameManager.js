@@ -5,10 +5,12 @@ import ScreenManager from './screens/ScreenManager';
 import JoinScreen from './screens/JoinScreen';
 import TronScreen from './screens/TronScreen';
 import RoadBlockScreen from './screens/RoadBlockScreen';
+import Audio from './audio';
 
 const frameOffsetY = 90 / 1080;
 
 export default class GameManager {
+
   constructor(renderer, setQRVisible) {
     this.renderer = renderer;
     this.stage = new Container();
@@ -87,8 +89,10 @@ export default class GameManager {
     this.gamesLeft--;
     if (this.gamesLeft) {
       this.nextLevel();
+      Audio.musicUp();
     } else {
       this.goToJoin(true);
+      Audio.musicStop();
     }
   }
 
@@ -96,6 +100,7 @@ export default class GameManager {
     this.players.inGame = true;
     this.gamesLeft = 5;
     this.nextLevel();
+    Audio.musicStart();
   }
 
   render() {

@@ -2,11 +2,13 @@ import { each } from 'lodash';
 import { Promise } from 'es6-promise';
 
 export class AnimationManager {
+
   constructor() {
     this.animations = {};
   }
 
   addAnimation(duration, easing, fun, from, to) {
+
     if (from === undefined) { from = 0; }
     if (to === undefined) { to = 1; }
 
