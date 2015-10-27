@@ -2,6 +2,7 @@ import { Container, Sprite, extras, loader } from 'pixi';
 import { linear, easeOutExpo, easeInOutSine } from 'easing';
 
 import Screen from './Screen';
+import Audio from '../audio';
 import { A, LEFT, RIGHT } from '../Controls';
 import { Promise } from 'es6-promise';
 
@@ -207,6 +208,7 @@ export default class RoadBlockScreen extends Screen {
 
   crash(player) {
     player.playing = false;
+    Audio.sfx.die();
     this.steerQueue = this.steerQueue || nopPromise();
     this.steerQueue = this.steerQueue.then(() => {
       return this.animations.addAnimation(0.1, linear, val => {
