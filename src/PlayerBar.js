@@ -86,7 +86,7 @@ export default class PlayerBar {
       player.avatar.visible = !!playerState.connected;
       player.avatarInactive.visible = !playerState.connected;
 
-      player.wins.text = playerState.connected ? playerSelect ? playerState.ready ? 'READY' : 'PRESS START' : `WINS: ${playerState.wins}` : `NOT CONNECTED`;
+      player.wins.text = playerState.connected ? playerSelect ? playerState.ready ? 'READY' : 'PRESS START' : `SCORE: ${Math.round(playerState.score)}` : `NOT CONNECTED`;
       player.wins.style.fill = (playerState.connected && playerSelect && playerState.ready) ? '#1ba24b' : '#aaaaaa';
       player.wins.alpha = playerState.connected ? (playerSelect && !playerState.ready) ? pulse : 1 : 0.6;
       player.label.alpha = playerState.connected ? 1 : 1;

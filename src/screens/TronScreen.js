@@ -265,6 +265,10 @@ export default class TronScreen extends Screen {
       const player = this.players[i];
       if (!player.connected) { continue; }
 
+      if (!player.died && elapsedTime === undefined) {
+        this.manager.addScore(i, elapsed * 1000);
+      }
+
       const oldX = player.position.x;
       const oldY = player.position.y;
       if (!player.died) {

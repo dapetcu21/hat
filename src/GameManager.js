@@ -62,6 +62,10 @@ export default class GameManager {
     this.mainScreen.setScreen(game);
   }
 
+  addScore(playerId, score) {
+    this.players.players[playerId].score += score;
+  }
+
   endGame(winner) {
     if (winner !== null) {
       this.players.players[winner].wins++;

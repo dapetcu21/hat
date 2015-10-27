@@ -736,6 +736,11 @@
 	      this.mainScreen.setScreen(game);
 	    }
 	  }, {
+	    key: 'addScore',
+	    value: function addScore(playerId, score) {
+	      this.players.players[playerId].score += score;
+	    }
+	  }, {
 	    key: 'endGame',
 	    value: function endGame(winner) {
 	      if (winner !== null) {
@@ -1064,7 +1069,7 @@
 	        player.avatar.visible = !!playerState.connected;
 	        player.avatarInactive.visible = !playerState.connected;
 
-	        player.wins.text = playerState.connected ? playerSelect ? playerState.ready ? 'READY' : 'PRESS START' : 'WINS: ' + playerState.wins : 'NOT CONNECTED';
+	        player.wins.text = playerState.connected ? playerSelect ? playerState.ready ? 'READY' : 'PRESS START' : 'SCORE: ' + Math.round(playerState.score) : 'NOT CONNECTED';
 	        player.wins.style.fill = playerState.connected && playerSelect && playerState.ready ? '#1ba24b' : '#aaaaaa';
 	        player.wins.alpha = playerState.connected ? playerSelect && !playerState.ready ? pulse : 1 : 0.6;
 	        player.label.alpha = playerState.connected ? 1 : 1;
@@ -16255,6 +16260,10 @@
 	        var player = _this3.players[i];
 	        if (!player.connected) {
 	          return 'continue';
+	        }
+
+	        if (!player.died && elapsedTime === undefined) {
+	          _this3.manager.addScore(i, elapsed * 1000);
 	        }
 
 	        var oldX = player.position.x;
