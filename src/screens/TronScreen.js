@@ -30,9 +30,6 @@ export default class TronScreen extends Screen {
   show() {
     const { width, height } = this.manager.renderer;
 
-    console.log('showed');
-    debugger;
-
     this.loadResources((loader) => {
       loader.add('tronGrid', 'Images/tron-grid.png');
       loader.add('tronBike0', 'Images/bike-red.png');
@@ -46,9 +43,6 @@ export default class TronScreen extends Screen {
       loader.add('tronBikeInactive', 'Images/bike-disabled.png');
     }, resources => {
       this.resources = resources;
-
-      console.log('loaded resources');
-      debugger;
 
       const grid = new extras.TilingSprite(resources.tronGrid.texture,
         gridWidth * width,
