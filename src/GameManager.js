@@ -73,8 +73,15 @@ export default class GameManager {
 
   nextLevel() {
     let game;
-    //game = new TronScreen(this, this.mainScreen);
-    game = new RoadBlockScreen(this, this.mainScreen);
+    const gameIndex = Math.floor(Math.random() * 2);
+    switch (gameIndex) {
+      case 0:
+        game = new TronScreen(this, this.mainScreen);
+        break;
+      case 1:
+        game = new RoadBlockScreen(this, this.mainScreen);
+        break;
+    }
     this.mainScreen.setScreen(game);
   }
 
