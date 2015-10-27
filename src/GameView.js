@@ -54,7 +54,7 @@ const GameView = new MAF.Class({
     draw();
 
     // Create room
-    const room = new MAF.PrivateRoom(this.ClassName);
+    const room = new MAF.PrivateRoom(this.ClassName + Math.random());
     this.room = room;
     game.players.room = room;
 
