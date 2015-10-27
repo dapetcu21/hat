@@ -234,7 +234,7 @@ export default class RoadBlockScreen extends Screen {
         this.manager.addScore(playerId, 100);
       }
 
-      return this.animations.addAnimation(0.15, easeInOutSine, (val, delta) => {
+      return this.animations.addAnimation(0.10, easeInOutSine, (val, delta) => {
         container.position.y += delta;
       }, 0, spriteHeight);
 
