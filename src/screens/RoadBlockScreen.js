@@ -107,7 +107,8 @@ export default class RoadBlockScreen extends Screen {
     }
 
     if (!lastSection || (!lastSection.left && !lastSection.right)) {
-      var addBranch = Math.round(Math.random() * 2) === 0;
+
+      var addBranch = Math.round(Math.random() * 2) === 0 && !!this.sections[player].length;
 
       if (addBranch) {
         var where = Math.round(Math.random()) ? 'left' : 'right';

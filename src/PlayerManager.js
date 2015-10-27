@@ -64,6 +64,7 @@ export default class PlayerManager {
     player.user = user;
     player.connected = true;
     this.room.send({ a: 'pl', h: user, p: playerId });
+    audio.sfx.connect();
   }
 
   left(user) {
@@ -78,6 +79,7 @@ export default class PlayerManager {
     };
     this.players[playerId] = player;
     this.controls.playerLeft(playerId);
+    audio.sfx.disconnect();
   }
 
   onData(payload) {

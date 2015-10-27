@@ -4,7 +4,10 @@ class AudioManager {
 
   constructor() {
     this.sfx = {
+      connect: this.load('connect.wav'),
+      disconnect: this.load('disconnect.wav'),
       die: this.load('die.wav'),
+      finish: this.load('finish.wav'),
     };
   }
 
@@ -12,10 +15,10 @@ class AudioManager {
 
     if (!this.audio) {
       this.audio = new Audio(getResource('Sounds/music.ogg'));
-      this.audio.loop = 1;
-      this.rate = 1;
     }
 
+    this.audio.loop = 1;
+    this.rate = 1;
     this.audio.play();
   }
 
@@ -30,7 +33,13 @@ class AudioManager {
   }
 
   musicStop() {
-    this.audio && this.audio.stop();
+
+    if (!this.audio) {
+      return;
+    }
+
+    this.audio.pause();
+    delete this.audio;
   }
 
   load(name) {

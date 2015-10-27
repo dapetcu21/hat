@@ -90,6 +90,9 @@ export default class GameManager {
   }
 
   endGame(winner) {
+
+    Audio.sfx.finish();
+
     if (winner !== null) {
       this.players.players[winner].wins++;
     }
@@ -98,8 +101,8 @@ export default class GameManager {
       this.nextLevel();
       Audio.musicUp();
     } else {
-      this.goToJoin(true);
       Audio.musicStop();
+      this.goToJoin(true);
     }
   }
 

@@ -1,3 +1,4 @@
+import audio from '../audio';
 import { Container, Sprite, Text, extras } from 'pixi';
 import { linear, easeOutExpo, easeInExpo, easeInOutExpo } from 'easing';
 
@@ -200,9 +201,11 @@ export default class TronScreen extends Screen {
   }
 
   playerDied(index) {
+
     const player = this.players[index];
     player.died = true;
     this.activePlayers--;
+    audio.sfx.die();
 
     const wait = () => this.animations.addAnimation(0.2, linear, () => {});
 
