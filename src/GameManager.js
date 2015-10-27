@@ -57,8 +57,8 @@ export default class GameManager {
   nextLevel() {
     let game;
     console.log('next level');
-    game = new TronScreen(this, this.mainScreen);
-    //game = new RoadBlockScreen(this, this.mainScreen);
+    // game = new TronScreen(this, this.mainScreen);
+    game = new RoadBlockScreen(this, this.mainScreen);
     this.mainScreen.setScreen(game);
   }
 

@@ -26,18 +26,17 @@ export default class RoadBlockScreen extends Screen {
 
   show() {
 
-    loader.add('roadBlock-false-false', 'Images/road-block-free.png');
-    loader.add('roadBlock-true-false', 'Images/road-block-left.png');
-    loader.add('roadBlock-false-true', 'Images/road-block-right.png');
+    this.loadResources((loader) => {
 
-    colors.forEach(function(v, k) {
-      loader.add(`car-${k}`, `Images/car-${v}.png`);
-    });
+      loader.add('roadBlock-false-false', 'Images/road-block-free.png');
+      loader.add('roadBlock-true-false', 'Images/road-block-left.png');
+      loader.add('roadBlock-false-true', 'Images/road-block-right.png');
 
-    loader.load((_, resources) => {
-      this.resources = resources;
-      this.init();
-    });
+      colors.forEach(function(v, k) {
+        loader.add(`car-${k}`, `Images/car-${v}.png`);
+      });
+    }, (resources) => this.resources = resources);
+
   }
 
   addRandomBlock(player) {
@@ -100,6 +99,8 @@ export default class RoadBlockScreen extends Screen {
       player.connected = playersState[i].connected;
       if (!player.connected) { continue; }
 
+      player.playing = true;
+
       player.container = new Container();
       player.container.x = laneWidth * i * width;
       this.gridContainer.addChild(player.container);
@@ -128,8 +129,13 @@ export default class RoadBlockScreen extends Screen {
 
   move(playerId) {
 
-    const sections = this.sections[playerId];
-    const container = this.players[playerId].container;
+    const sections  = this.sections[playerId];
+    const player    = this.players[playerId];
+    const container = player.container;
+
+    if (!player.playing) {
+      return false;
+    }
 
     this.animationQueue = this.animationQueue || nopPromise();
     this.animationQueue = this.animationQueue.then(() => {
@@ -137,31 +143,59 @@ export default class RoadBlockScreen extends Screen {
       const spriteHeight = sections[0].sprite.height;
       container.position.y -= spriteHeight;
       return spriteHeight;
-
     }).then((spriteHeight) => {
+
+      const currentSection = sections[sections.length];
+
+      if (
+        (currentSection.left && player.side == 0)
+        && (currentSection.right && player.side == 1)
+      ) {
+        crash(player);
+        return nopPromise();
+      }
+
       return this.animations.addAnimation(0.15, easeInOutSine, (val, delta) => {
         container.position.y += delta;
       }, 0, spriteHeight);
-
     }).then(() => {
       const section = sections.pop();
+      this.manager.addScore(playerId, 100);
       container.removeChild(section.sprite);
-
     });
   }
 
   steer(playerId, newSide) {
-    const player = this.players[playerId];
 
+    const player = this.players[playerId];
     const oldSide = player.side;
+
+    if (!player.playing) {
+      return false;
+    }
+
     player.side = newSide;
     if (oldSide === newSide) { return; }
 
     this.steerQueue = this.steerQueue || nopPromise();
     this.steerQueue = this.steerQueue.then(() => {
+
       return this.animations.addAnimation(0.1, linear, val => {
+        player.car.rotate = val;
+      }, 0, Math.PI/8);
+
+      this.animations.addAnimation(0.1, linear, val => {
         player.car.position.x = val;
       }, oldSide * player.car.width, newSide * player.car.width);
+    });
+  }
+
+  crash(player) {
+    player.playing = false;
+    this.steerQueue = this.steerQueue.then(() => {
+      return this.animations.addAnimation(0.1, linear, val => {
+        player.car.rotate = val;
+      }, 0, Math.PI/8);
     });
   }
 
