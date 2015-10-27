@@ -40,12 +40,21 @@ export default class GameManager {
       this.stage.addChild(this.mainScreen.bgContainer);
       this.stage.addChild(background);
       this.stage.addChild(this.mainScreen.container);
-      this.mainScreen.setScreen(new JoinScreen(this, this.mainScreen));
+      this.goToJoin();
     });
+  }
+
+  goToJoin() {
+    this.players.inGame = false;
+    for (let i = 0; i < 4; i++) {
+      this.players.players[i].wins = 0;
+    }
+    this.mainScreen.setScreen(new JoinScreen(this, this.mainScreen));
   }
 
   nextLevel() {
     let game;
+    console.log('next level')
     game = new TronScreen(this, this.mainScreen);
     this.mainScreen.setScreen(game);
   }
@@ -58,8 +67,7 @@ export default class GameManager {
     if (this.gamesLeft) {
       this.nextLevel();
     } else {
-      this.players.inGame = false;
-      this.mainScreen.setScreen(new JoinScreen(this, this.mainScreen));
+      this.goToJoin(0;
     }
   }
 

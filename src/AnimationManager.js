@@ -16,10 +16,12 @@ export class AnimationManager {
     const promise = new Promise(_resolve => { resolve = _resolve; });
 
     this.animations[Math.random()] = ({
-      from, to, duration, easing, fun, timeLeft: duration, resolve,
+      from, to, duration, easing, fun, resolve,
+      timeLeft: duration,
+      lastValue: from + easing(0) * (to - from),
     });
 
-    fun(from);
+    fun(from, 0);
 
     return promise;
   }
@@ -38,7 +40,8 @@ export class AnimationManager {
       }
       const val = anim.easing(1 - (anim.timeLeft / anim.duration));
       const adjusted = anim.from + val * (anim.to - anim.from);
-      anim.fun(adjusted);
+      anim.fun(adjusted, adjusted - anim.lastValue);
+      anim.lastValue = adjusted;
     });
   }
 }
