@@ -1,4 +1,4 @@
-import { Container, Sprite, Text, extras, loader } from 'pixi';
+import { Container, Sprite, Text, extras } from 'pixi';
 import { linear, easeOutExpo, easeInExpo, easeInOutExpo } from 'easing';
 
 import Screen from './Screen';
@@ -30,18 +30,25 @@ export default class TronScreen extends Screen {
   show() {
     const { width, height } = this.manager.renderer;
 
-    loader.add('tronGrid', 'Images/tron-grid.png');
-    loader.add('tronBike0', 'Images/bike-red.png');
-    loader.add('tronBike1', 'Images/bike-green.png');
-    loader.add('tronBike2', 'Images/bike-blue.png');
-    loader.add('tronBike3', 'Images/bike-yellow.png');
-    loader.add('tronTrail0', 'Images/trail-red.png');
-    loader.add('tronTrail1', 'Images/trail-green.png');
-    loader.add('tronTrail2', 'Images/trail-blue.png');
-    loader.add('tronTrail3', 'Images/trail-yellow.png');
-    loader.add('tronBikeInactive', 'Images/bike-disabled.png');
-    loader.load((_, resources) => {
+    console.log('showed');
+    debugger;
+
+    this.loadResources((loader) => {
+      loader.add('tronGrid', 'Images/tron-grid.png');
+      loader.add('tronBike0', 'Images/bike-red.png');
+      loader.add('tronBike1', 'Images/bike-green.png');
+      loader.add('tronBike2', 'Images/bike-blue.png');
+      loader.add('tronBike3', 'Images/bike-yellow.png');
+      loader.add('tronTrail0', 'Images/trail-red.png');
+      loader.add('tronTrail1', 'Images/trail-green.png');
+      loader.add('tronTrail2', 'Images/trail-blue.png');
+      loader.add('tronTrail3', 'Images/trail-yellow.png');
+      loader.add('tronBikeInactive', 'Images/bike-disabled.png');
+    }, resources => {
       this.resources = resources;
+
+      console.log('loaded resources');
+      debugger;
 
       const grid = new extras.TilingSprite(resources.tronGrid.texture,
         gridWidth * width,
@@ -221,7 +228,7 @@ export default class TronScreen extends Screen {
       .then(wait)
       .then(() => { setState(false); });
 
-    if (this.activePlayers <= 1) {
+    if (this.activePlayers <= 0) {
       let winner = null;
       for (let i = 0; i < 4; i++) {
         if (this.players[i].connected && !this.players[i].died) {
@@ -229,7 +236,7 @@ export default class TronScreen extends Screen {
           break;
         }
       }
-      this.endGame(winner);
+      this.manager.endGame(winner);
     }
   }
 
@@ -355,8 +362,8 @@ export default class TronScreen extends Screen {
 
   destroy() {
     this.manager.players.controls.removeListener('buttonDown', this.handleButtons);
-    //return this.animations.addAnimation(0.5, val => {
-      //this.bgContainer.alpha = val;
-    //}, 1, 0);
+    return this.animations.addAnimation(0.5, linear, val => {
+      this.bgContainer.alpha = val;
+    }, 1, 0);
   }
 }
