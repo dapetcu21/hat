@@ -255,8 +255,11 @@ export default class TronScreen extends Screen {
     super.render();
 
     const time = Date.now() / 1000;
-    const elapsed = elapsedTime || (this.lastTime ? time - this.lastTime : 0);
+    let elapsed = elapsedTime || (this.lastTime ? time - this.lastTime : 0);
     this.lastTime = time;
+    if (elapsed > 1 / velocity) {
+      elapsed = 1 / velocity;
+    }
 
     if (!this.grid) { return; }
     if (this.paused) { return; }
@@ -267,7 +270,7 @@ export default class TronScreen extends Screen {
       if (!player.connected) { continue; }
 
       if (!player.died && elapsedTime === undefined) {
-        this.manager.addScore(i, elapsed * 1000);
+        this.manager.addScore(i, elapsed * 500);
       }
 
       const oldX = player.position.x;

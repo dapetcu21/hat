@@ -45,18 +45,32 @@ export default class GameManager {
     });
   }
 
-  goToJoin() {
+  goToJoin(calculateWinner) {
     this.players.inGame = false;
-    for (let i = 0; i < 4; i++) {
-      this.players.players[i].wins = 0;
-      this.players.players[i].score = 0;
+
+    if (calculateWinner) {
+      this.winner = null;
+      let points = -1;
+      for (let i = 0; i < 4; i++) {
+        const player = this.players.players[i];
+        if (player.score > points) {
+          points = player.score;
+          this.winner = i;
+        }
+      }
     }
-    this.mainScreen.setScreen(new JoinScreen(this, this.mainScreen));
+
+    this.mainScreen.setScreen(new JoinScreen(this, this.mainScreen)).then(() => {
+      for (let i = 0; i < 4; i++) {
+        const player = this.players.players[i];
+        player.wins = 0;
+        player.score = 0;
+      }
+    });
   }
 
   nextLevel() {
     let game;
-    console.log('next level');
     game = new TronScreen(this, this.mainScreen);
     //game = new RoadBlockScreen(this, this.mainScreen);
     this.mainScreen.setScreen(game);
@@ -74,7 +88,7 @@ export default class GameManager {
     if (this.gamesLeft) {
       this.nextLevel();
     } else {
-      this.goToJoin();
+      this.goToJoin(true);
     }
   }
 

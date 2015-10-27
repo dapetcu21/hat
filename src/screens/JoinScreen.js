@@ -22,7 +22,11 @@ export default class JoinScreen extends Screen {
       players.players[i].ready = false;
     }
 
-    const label = new Text('SCAN TO JOIN!', {
+    let text = 'SCAN TO JOIN!';
+    if (typeof this.manager.winner === 'number') {
+      text = `PLAYER ${this.manager.winner + 1} WON! NEW GAME?`;
+    }
+    const label = new Text(text, {
       font: '62px VCR, arial',
       fill: '#ffffff',
     });
@@ -55,7 +59,6 @@ export default class JoinScreen extends Screen {
       this.label.alpha = 1 - val;
     }).then(() => {
       this.manager.playerSelect = false;
-      console.log('done');
     });
   }
 }
