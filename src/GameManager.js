@@ -4,8 +4,9 @@ import PlayerManager from './PlayerManager';
 import ScreenManager from './screens/ScreenManager';
 import JoinScreen from './screens/JoinScreen';
 import TronScreen from './screens/TronScreen';
+import RoadBlockScreen from './screens/RoadBlockScreen';
 
-const frameOffsetY = 195 / 1080;
+const frameOffsetY = 90 / 1080;
 
 export default class GameManager {
   constructor(renderer, setQRVisible) {
@@ -29,7 +30,6 @@ export default class GameManager {
     this.fontWorkaround = null;
 
     this.playerBar = new PlayerBar(this);
-    this.stage.addChild(this.playerBar.container);
 
     loader.add('bgFrame', 'Images/frame.png');
     loader.load((_, resources) => {
@@ -40,6 +40,7 @@ export default class GameManager {
       this.stage.addChild(this.mainScreen.bgContainer);
       this.stage.addChild(background);
       this.stage.addChild(this.mainScreen.container);
+      this.stage.addChild(this.playerBar.container);
       this.goToJoin();
     });
   }
@@ -48,14 +49,16 @@ export default class GameManager {
     this.players.inGame = false;
     for (let i = 0; i < 4; i++) {
       this.players.players[i].wins = 0;
+      this.players.players[i].score = 0;
     }
     this.mainScreen.setScreen(new JoinScreen(this, this.mainScreen));
   }
 
   nextLevel() {
     let game;
-    console.log('next level')
+    console.log('next level');
     game = new TronScreen(this, this.mainScreen);
+    //game = new RoadBlockScreen(this, this.mainScreen);
     this.mainScreen.setScreen(game);
   }
 
@@ -67,7 +70,7 @@ export default class GameManager {
     if (this.gamesLeft) {
       this.nextLevel();
     } else {
-      this.goToJoin(0;
+      this.goToJoin();
     }
   }
 

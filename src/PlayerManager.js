@@ -11,6 +11,7 @@ export default class PlayerManager {
         user: null,
         connected: false,
         wins: 0,
+        score: 0,
       });
     }
 
@@ -73,6 +74,7 @@ export default class PlayerManager {
       user: this.inGame ? player.user : null,
       connected: false,
       wins: 0,
+      score: 0,
     };
     this.players[playerId] = player;
     this.controls.playerLeft(playerId);
