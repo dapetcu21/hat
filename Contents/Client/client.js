@@ -182,18 +182,21 @@
     }
 
     Object.keys(active).forEach(function(k) {
+
       if (!!buttons[k].length !== !!active[k].length) {
+
         var action = !!active[k].length ? 'bd' : 'bu';
-        console.log('sending: ', { a: action, b: k, p: player });
         room.send({ a: action, b: k, p: player });
+        console.log('sending: ', { a: action, b: k, p: player });
 
         if (action == 'bd') {
           if (k == 'f') {
             fullscreen();
           }
+          vibrate(20);
         }
-
       }
+
     });
 
     buttons = active;
