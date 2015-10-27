@@ -1,5 +1,5 @@
-import { Container, Sprite, extras, loader } from 'pixi';
-import { linear, easeOutExpo, easeInOutSine } from 'easing';
+import { Container, Sprite, Text, extras } from 'pixi';
+import { linear, easeOutExpo, easeInOutSine, easeInOutExpo, easeInExpo } from 'easing';
 
 import Screen from './Screen';
 import { A, LEFT, RIGHT } from '../Controls';
@@ -15,6 +15,7 @@ const gridHeight = 884 / 1080;
 const gridWidth = 1 - 2 * gridX;
 const laneWidth = gridWidth / 4;
 const centerOffset = 109 / 1920;
+const readyPosY = 440 / 768;
 
 const colors = [
   'red',
@@ -33,13 +34,61 @@ export default class RoadBlockScreen extends Screen {
       loader.add('roadBlock-true-false', 'Images/road-block-left.png');
       loader.add('roadBlock-false-true', 'Images/road-block-right.png');
 
-      colors.forEach(function(v, k) {
+      colors.forEach((v, k) => {
         loader.add(`car-${k}`, `Images/car-${v}.png`);
       });
 
     }, (resources) => {
       this.resources = resources;
+      this.paused = true;
       this.init();
+
+      const { width, height } = this.manager.renderer;
+
+      const readyText = new Text('READY!', {
+        font: '93px VCR',
+        fill: '#ffffff',
+      });
+      readyText.anchor.x = 0.5;
+      readyText.anchor.y = 0.5;
+      readyText.y = readyPosY * height;
+      this.container.addChild(readyText);
+
+      this.animations.addAnimation(1, easeOutExpo, val => {
+        readyText.x = val;
+
+      }, -0.25 * width, 0.5 * width).then(() => {
+        return this.animations.addAnimation(1, easeInExpo, val => {
+          readyText.x = val;
+        }, 0.5 * width, 1.25 * width);
+
+      }).then(() => {
+        this.container.removeChild(readyText);
+
+      }).then(() => {
+        const goText = new Text('GO!', {
+          font: '93px VCR',
+          fill: '#ffffff',
+        });
+        goText.anchor.x = 0.5;
+        goText.anchor.y = 0.5;
+        goText.y = readyPosY * height;
+        goText.x = 0.5 * width;
+        this.container.addChild(goText);
+
+        this.paused = false;
+
+        return this.animations.addAnimation(1, easeInOutExpo, val => {
+          const scale = 2 - val;
+          goText.scale.x = scale;
+          goText.scale.y = scale;
+          goText.alpha = val;
+        }, 1, 0).then(() => {
+          this.container.removeChild(goText);
+        });
+
+      });
+
     });
   }
 
@@ -103,6 +152,7 @@ export default class RoadBlockScreen extends Screen {
       player.connected = playersState[i].connected;
       if (!player.connected) { continue; }
 
+      player.id = i;
       player.playing = true;
 
       player.container = new Container();
@@ -192,16 +242,18 @@ export default class RoadBlockScreen extends Screen {
     player.side = newSide;
     if (oldSide === newSide) { return; }
 
-    if (this.hasCrashed(playerId)) {
-      this.crash();
-      return;
-    }
+    const hasCrashed = this.hasCrashed(playerId);
 
     this.steerQueue = this.steerQueue || nopPromise();
     this.steerQueue = this.steerQueue.then(() => {
       return this.animations.addAnimation(0.1, linear, val => {
         player.car.position.x = val;
       }, (oldSide + 0.5) * player.car.width, (newSide + 0.5) * player.car.width);
+
+    }).then(() => {
+      if (hasCrashed) {
+        this.crash(player);
+      }
     });
   }
 
@@ -212,10 +264,25 @@ export default class RoadBlockScreen extends Screen {
       return this.animations.addAnimation(0.1, linear, val => {
         player.car.rotation = val;
       }, 0, Math.PI / 8);
+
+    }).then(() => {
+      for (let i = 0; i < 4; i++) {
+        const p = this.players[i];
+        if (p.connected && p.playing) {
+          return null;
+        }
+      }
+
+      return this.animations.addAnimation(1, linear, () => {}).then(() => {
+        this.manager.endGame(player.id);
+      });
     });
   }
 
   handleButtons(playerId, button) {
+    if (this.paused) {
+      return;
+    }
 
     if (!this.players[playerId].connected) {
       return;
@@ -223,11 +290,9 @@ export default class RoadBlockScreen extends Screen {
 
     switch (button) {
       case LEFT:
-        //this.move(playerId);
         this.steer(playerId, 0);
         break;
       case RIGHT:
-        //this.move(playerId);
         this.steer(playerId, 1);
         break;
       case A:
@@ -236,8 +301,9 @@ export default class RoadBlockScreen extends Screen {
     }
   }
 
-  render() {
-    super.render();
+  destroy() {
+    return this.animations.addAnimation(0.5, linear, val => {
+      this.bgContainer.alpha = val;
+    }, 1, 0);
   }
-
 }
