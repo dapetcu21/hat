@@ -28,8 +28,8 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      DEBUG: debug
+      DEBUG: debug,
     }),
-    new webpack.optimize.UglifyJsPlugin({minimize: true}),
+    //new webpack.optimize.UglifyJsPlugin({minimize: true}),
   ],
 };

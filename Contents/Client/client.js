@@ -193,7 +193,7 @@
           if (k == 'f') {
             fullscreen();
           }
-          vibrate(20);
+          vibrate(30);
         }
       }
 
