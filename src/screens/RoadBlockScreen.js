@@ -157,12 +157,22 @@ export default class RoadBlockScreen extends Screen {
       player.playing = true;
 
       player.container = new Container();
+      player.container.alpha = 0;
       player.container.x = (laneWidth * i + centerOffset) * width;
       this.gridContainer.addChild(player.container);
 
       player.carContainer = new Container();
+      player.carContainer.alpha = 0;
       player.carContainer.x = (laneWidth * i + centerOffset) * width;
       this.gridContainer.addChild(player.carContainer);
+
+      this.animations.addAnimation(0.1 + 0.3 * i, linear, () => {}).then(() => {
+        console.log('delay passed');
+        return this.animations.addAnimation(0.5, easeOutExpo, val => {
+          player.container.alpha = val;
+          player.carContainer.alpha = val;
+        });
+      });
 
       player.side = 0;
 
@@ -198,9 +208,10 @@ export default class RoadBlockScreen extends Screen {
     const player    = this.players[playerId];
     const container = player.container;
 
-    if (!player.playing) {
+    if (!player.playing || player.moving) {
       return false;
     }
+    player.moving = true;
 
     let spriteToRemove = null;
 
@@ -227,6 +238,7 @@ export default class RoadBlockScreen extends Screen {
       }, 0, spriteHeight);
 
     }).then(() => {
+      player.moving = false;
       if (spriteToRemove) {
         container.removeChild(spriteToRemove);
       }
