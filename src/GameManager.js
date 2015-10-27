@@ -4,6 +4,7 @@ import PlayerManager from './PlayerManager';
 import ScreenManager from './screens/ScreenManager';
 import JoinScreen from './screens/JoinScreen';
 import TronScreen from './screens/TronScreen';
+import RoadBlockScreen from './screens/RoadBlockScreen';
 
 const frameOffsetY = 195 / 1080;
 
@@ -45,8 +46,8 @@ export default class GameManager {
   }
 
   startGame() {
-    const tron = new TronScreen(this, this.mainScreen);
-    this.mainScreen.setScreen(tron);
+    const game = new RoadBlockScreen(this, this.mainScreen);
+    this.mainScreen.setScreen(game);
   }
 
   render() {

@@ -567,7 +567,7 @@
 	    draw();
 
 	    // Create room
-	    var room = new MAF.PrivateRoom(this.ClassName);
+	    var room = new MAF.PrivateRoom(this.ClassName + Math.random());
 	    this.room = room;
 	    game.players.room = room;
 
@@ -668,6 +668,10 @@
 
 	var _screensTronScreen2 = _interopRequireDefault(_screensTronScreen);
 
+	var _screensRoadBlockScreen = __webpack_require__(57);
+
+	var _screensRoadBlockScreen2 = _interopRequireDefault(_screensRoadBlockScreen);
+
 	var frameOffsetY = 195 / 1080;
 
 	var GameManager = (function () {
@@ -715,8 +719,8 @@
 	  }, {
 	    key: 'startGame',
 	    value: function startGame() {
-	      var tron = new _screensTronScreen2['default'](this, this.mainScreen);
-	      this.mainScreen.setScreen(tron);
+	      var game = new _screensRoadBlockScreen2['default'](this, this.mainScreen);
+	      this.mainScreen.setScreen(game);
 	    }
 	  }, {
 	    key: 'render',
@@ -16144,6 +16148,222 @@
 	})(_Screen3['default']);
 
 	exports['default'] = TronScreen;
+	module.exports = exports['default'];
+
+/***/ },
+/* 57 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _get = __webpack_require__(22)['default'];
+
+	var _inherits = __webpack_require__(35)['default'];
+
+	var _createClass = __webpack_require__(11)['default'];
+
+	var _classCallCheck = __webpack_require__(15)['default'];
+
+	var _interopRequireDefault = __webpack_require__(1)['default'];
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	var _pixi = __webpack_require__(8);
+
+	var _easing = __webpack_require__(52);
+
+	var _Screen2 = __webpack_require__(53);
+
+	var _Screen3 = _interopRequireDefault(_Screen2);
+
+	var _Controls = __webpack_require__(21);
+
+	var _es6Promise = __webpack_require__(47);
+
+	function nopPromise() {
+	  return new _es6Promise.Promise(function (resolve) {
+	    resolve();
+	  });
+	}
+
+	var gridY = 242 / 1080;
+	var gridX = 81 / 1920;
+	var gridHeight = 884 / 1080;
+	var gridWidth = 1 - 2 * gridX;
+	var laneWidth = gridWidth / 2;
+
+	var colors = ["red", "green", "blue", "yellow"];
+
+	var RoadBlockScreen = (function (_Screen) {
+	  _inherits(RoadBlockScreen, _Screen);
+
+	  function RoadBlockScreen() {
+	    _classCallCheck(this, RoadBlockScreen);
+
+	    _get(Object.getPrototypeOf(RoadBlockScreen.prototype), 'constructor', this).apply(this, arguments);
+	  }
+
+	  _createClass(RoadBlockScreen, [{
+	    key: 'show',
+	    value: function show() {
+	      var _this = this;
+
+	      _pixi.loader.add('roadBlock-false-false', 'Images/road-block-free.png');
+	      _pixi.loader.add('roadBlock-true-false', 'Images/road-block-left.png');
+	      _pixi.loader.add('roadBlock-false-true', 'Images/road-block-right.png');
+
+	      colors.forEach(function (v, k) {
+	        _pixi.loader.add('car-' + k, 'Images/car-' + v + '.png');
+	      });
+
+	      _pixi.loader.load(function (_, resources) {
+	        _this.resources = resources;
+	        _this.init();
+	      });
+	    }
+	  }, {
+	    key: 'addRandomBlock',
+	    value: function addRandomBlock(player) {
+
+	      var lastSection = false;
+
+	      if (this.sections[player] && this.sections[player][0]) {
+	        lastSection = this.sections[player][0];
+	      }
+
+	      var section = {
+	        left: false,
+	        right: false
+	      };
+
+	      if (!lastSection || !lastSection.left && !lastSection.right) {
+	        var addBranch = Math.round(Math.random() * 2) === 0;
+
+	        if (addBranch) {
+	          var where = Math.round(Math.random()) ? 'left' : 'right';
+	          section[where] = true;
+	        }
+	      }
+
+	      var sprite = new _pixi.Sprite(this.resources['roadBlock-' + section.left + '-' + section.right].texture);
+	      sprite.position.x = 0;
+	      section.sprite = sprite;
+
+	      this.players[player].container.addChild(sprite);
+	      this.sections[player].unshift(section);
+	      var pos = 0;
+
+	      this.sections[player].forEach(function (s) {
+	        s.sprite.position.y = pos;
+	        pos += s.sprite.height;
+	      });
+	    }
+	  }, {
+	    key: 'init',
+	    value: function init() {
+	      var _manager$renderer = this.manager.renderer;
+	      var width = _manager$renderer.width;
+	      var height = _manager$renderer.height;
+
+	      var container = new _pixi.Container();
+	      var playersState = this.manager.players.players;
+	      var players = [];
+
+	      container.position.x = gridX * width;
+	      container.position.y = gridY * height;
+
+	      this.bgContainer.addChild(container);
+	      this.gridContainer = container;
+	      this.sections = [[], [], [], []];
+
+	      this.players = players;
+
+	      for (var i = 0; i < 4; i++) {
+
+	        var player = {};
+	        players.push(player);
+
+	        player.connected = playersState[i].connected;
+	        if (!player.connected) {
+	          continue;
+	        }
+
+	        player.container = new _pixi.Container();
+	        player.container.x = laneWidth * i * width;
+	        this.gridContainer.addChild(player.container);
+
+	        player.carContainer = new _pixi.Container();
+	        player.carContainer.x = laneWidth * i * width;
+	        this.gridContainer.addChild(player.carContainer);
+
+	        player.side = 0;
+
+	        player.car = new _pixi.Sprite(this.resources['car-' + i].texture);
+	        player.car.position.y = player.car.height * 4;
+	        player.car.position.x = player.side * player.car.width;
+	        player.carContainer.addChild(player.car);
+
+	        console.log(player.car.position);
+
+	        for (var j = 0; j < 6; j++) {
+	          this.addRandomBlock(i);
+	        }
+	      }
+
+	      this.handleButtons = this.handleButtons.bind(this);
+	      this.manager.players.controls.addListener('buttonDown', this.handleButtons);
+	    }
+	  }, {
+	    key: 'move',
+	    value: function move(playerId) {
+	      var _this2 = this;
+
+	      this.addRandomBlock(playerId);
+
+	      var sections = this.sections[playerId];
+
+	      this.animationQueue = this.animationQueue || nopPromise();
+	      this.animationQueue = this.animationQueue.then(function () {
+	        return _this2.animations.addAnimation(1, _easing.linear, function (val) {
+	          _this2.players[playerId].container.position.y = val;
+	        }, -sections[0].sprite.height, 0);
+	      });
+	    }
+	  }, {
+	    key: 'handleButtons',
+	    value: function handleButtons(playerId, button) {
+
+	      if (!this.players[playerId].connected) {
+	        return;
+	      }
+
+	      switch (button) {
+	        case _Controls.LEFT:
+	          this.move(playerId);
+	          this.players[playerId].side = 0;
+	          break;
+	        case _Controls.RIGHT:
+	          this.players[playerId].side = 1;
+	          this.move(playerId);
+	          break;
+	        case _Controls.A:
+	          this.move(playerId);
+	          break;
+	      }
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      _get(Object.getPrototypeOf(RoadBlockScreen.prototype), 'render', this).call(this);
+	    }
+	  }]);
+
+	  return RoadBlockScreen;
+	})(_Screen3['default']);
+
+	exports['default'] = RoadBlockScreen;
 	module.exports = exports['default'];
 
 /***/ }
