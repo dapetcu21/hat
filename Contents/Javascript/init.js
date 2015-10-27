@@ -567,7 +567,7 @@
 	    draw();
 
 	    // Create room
-	    var room = new MAF.PrivateRoom(this.ClassName);
+	    var room = new MAF.PrivateRoom(this.ClassName + Math.random());
 	    this.room = room;
 	    game.players.room = room;
 
@@ -713,10 +713,32 @@
 	      });
 	    }
 	  }, {
+	    key: 'nextLevel',
+	    value: function nextLevel() {
+	      var game = undefined;
+	      game = new _screensTronScreen2['default'](this, this.mainScreen);
+	      this.mainScreen.setScreen(game);
+	    }
+	  }, {
+	    key: 'endGame',
+	    value: function endGame(winner) {
+	      if (winner !== null) {
+	        this.players.players[winner].wins++;
+	      }
+	      this.gamesLeft--;
+	      if (this.gamesLeft) {
+	        this.nextLevel();
+	      } else {
+	        this.players.inGame = false;
+	        this.mainScreen.setScreen(new _screensJoinScreen2['default'](this, this.mainScreen));
+	      }
+	    }
+	  }, {
 	    key: 'startGame',
 	    value: function startGame() {
-	      var tron = new _screensTronScreen2['default'](this, this.mainScreen);
-	      this.mainScreen.setScreen(tron);
+	      this.players.inGame = true;
+	      this.gamesLeft = 5;
+	      this.nextLevel();
 	    }
 	  }, {
 	    key: 'render',
@@ -3486,6 +3508,8 @@
 	      this.animations[Math.random()] = {
 	        from: from, to: to, duration: duration, easing: easing, fun: fun, timeLeft: duration, resolve: resolve
 	      };
+
+	      fun(from);
 
 	      return promise;
 	    }
@@ -15889,6 +15913,8 @@
 
 	var _classCallCheck = __webpack_require__(15)['default'];
 
+	var _Object$assign = __webpack_require__(57)['default'];
+
 	var _interopRequireDefault = __webpack_require__(1)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
@@ -15909,6 +15935,7 @@
 	var gridX = 81 / 1920;
 	var gridHeight = 884 / 1080;
 	var gridWidth = 1 - 2 * gridX;
+	var readyPosY = 440 / 768;
 	var rows = 20;
 	var columns = 45;
 	var velocity = 10; // squares per second;
@@ -15949,6 +15976,10 @@
 	      _pixi.loader.add('tronBike1', 'Images/bike-green.png');
 	      _pixi.loader.add('tronBike2', 'Images/bike-blue.png');
 	      _pixi.loader.add('tronBike3', 'Images/bike-yellow.png');
+	      _pixi.loader.add('tronTrail0', 'Images/trail-red.png');
+	      _pixi.loader.add('tronTrail1', 'Images/trail-green.png');
+	      _pixi.loader.add('tronTrail2', 'Images/trail-blue.png');
+	      _pixi.loader.add('tronTrail3', 'Images/trail-yellow.png');
 	      _pixi.loader.add('tronBikeInactive', 'Images/bike-disabled.png');
 	      _pixi.loader.load(function (_, resources) {
 	        _this.resources = resources;
@@ -15962,13 +15993,55 @@
 	        grid.tileScale.y = 0.5;
 	        grid.alpha = 0;
 
+	        var readyText = new _pixi.Text('READY!', {
+	          font: '93px VCR',
+	          fill: '#ffffff'
+	        });
+	        readyText.anchor.x = 0.5;
+	        readyText.anchor.y = 0.5;
+	        readyText.y = readyPosY * height;
+	        _this.container.addChild(readyText);
+
+	        _this.animations.addAnimation(1, _easing.easeOutExpo, function (val) {
+	          readyText.x = val;
+	        }, -0.25 * width, 0.5 * width).then(function () {
+	          return _this.animations.addAnimation(1, _easing.easeInExpo, function (val) {
+	            readyText.x = val;
+	          }, 0.5 * width, 1.25 * width);
+	        }).then(function () {
+	          _this.container.removeChild(readyText);
+	        });
+
+	        _this.initializeState();
+	        _this.render(0.5 / velocity);
+	        _this.paused = true;
+
 	        _this.animations.addAnimation(2, _easing.easeOutExpo, function (val) {
 	          var tileScale = 0.5 + 0.5 * val;
 	          grid.tileScale.x = tileScale;
 	          grid.tileScale.y = tileScale;
 	          grid.alpha = val;
 	        }).then(function () {
-	          _this.initializeState();
+	          _this.paused = false;
+
+	          var goText = new _pixi.Text('GO!', {
+	            font: '93px VCR',
+	            fill: '#ffffff'
+	          });
+	          goText.anchor.x = 0.5;
+	          goText.anchor.y = 0.5;
+	          goText.y = readyPosY * height;
+	          goText.x = 0.5 * width;
+	          _this.container.addChild(goText);
+
+	          return _this.animations.addAnimation(1, _easing.easeInOutExpo, function (val) {
+	            var scale = 2 - val;
+	            goText.scale.x = scale;
+	            goText.scale.y = scale;
+	            goText.alpha = val;
+	          }, 1, 0).then(function () {
+	            _this.container.removeChild(goText);
+	          });
 	        });
 	      });
 	    }
@@ -16024,13 +16097,39 @@
 	        }
 
 	        player.position = startingPositions.shift()();
+	        player.trailOrigin = _Object$assign({}, player.position);
 
+	        var trailContainer = new _pixi.Container();
+	        var trailTexture = this.resources['tronTrail' + i].texture;
+	        player.trailTexture = trailTexture;
+	        player.trailContainer = trailContainer;
+	        gridContainer.addChild(trailContainer);
+
+	        var bikeContainer = new _pixi.Container();
+	        var inactiveBike = new _pixi.Sprite(this.resources.tronBikeInactive.texture);
 	        var bike = new _pixi.Sprite(this.resources['tronBike' + i].texture);
 	        bike.anchor.x = 0.5;
 	        bike.anchor.y = 0.5;
-	        player.bike = bike;
-	        gridContainer.addChild(bike);
+	        inactiveBike.anchor.y = 0.5;
+	        inactiveBike.anchor.x = 0.5;
+	        inactiveBike.visible = false;
+	        bikeContainer.addChild(inactiveBike);
+	        bikeContainer.addChild(bike);
+
+	        player.bike = bikeContainer;
+	        player.bikeSprite = bike;
+	        player.inactiveBikeSprite = inactiveBike;
 	      }
+
+	      for (var i = 0; i < 4; i++) {
+	        var player = players[i];
+	        if (!player.connected) {
+	          continue;
+	        }
+	        gridContainer.addChild(player.bike);
+	      }
+
+	      this.activePlayers = 4 - startingPositions.length;
 	    }
 	  }, {
 	    key: 'handleButtons',
@@ -16041,7 +16140,6 @@
 	      if (!this.players[playerId].connected) {
 	        return;
 	      }
-	      console.log(playerId, button);
 	      switch (button) {
 	        case _Controls.UP:
 	        case _Controls.DOWN:
@@ -16052,60 +16150,148 @@
 	      }
 	    }
 	  }, {
-	    key: 'render',
-	    value: function render() {
+	    key: 'playerDied',
+	    value: function playerDied(index) {
 	      var _this2 = this;
+
+	      var player = this.players[index];
+	      player.died = true;
+	      this.activePlayers--;
+
+	      var wait = function wait() {
+	        return _this2.animations.addAnimation(0.2, _easing.linear, function () {});
+	      };
+
+	      var setState = function setState(state) {
+	        player.bikeSprite.visible = state;
+	        player.inactiveBikeSprite.visible = !state;
+	      };
+
+	      setState(false);
+
+	      wait().then(function () {
+	        setState(true);
+	      }).then(wait).then(function () {
+	        setState(false);
+	      }).then(wait).then(function () {
+	        setState(true);
+	      }).then(wait).then(function () {
+	        setState(false);
+	      });
+
+	      if (this.activePlayers <= 1) {
+	        var winner = null;
+	        for (var i = 0; i < 4; i++) {
+	          if (this.players[i].connected && !this.players[i].died) {
+	            winner = i;
+	            break;
+	          }
+	        }
+	        this.endGame(winner);
+	      }
+	    }
+	  }, {
+	    key: 'adjustTrail',
+	    value: function adjustTrail(player, gridItem) {
+	      var _player$trailOrigin = player.trailOrigin;
+	      var x = _player$trailOrigin.x;
+	      var y = _player$trailOrigin.y;
+	      var dx = _player$trailOrigin.dx;
+	      var dy = _player$trailOrigin.dy;
+
+	      if (!player.trail) {
+	        var trail = new _pixi.Sprite(player.trailTexture);
+	        trail.anchor.x = 0;
+	        trail.anchor.y = 0.5;
+	        trail.rotation = getRotation(dx, dy);
+	        trail.position.x = x * gridItem.width - dx * player.trailTexture.height * 0.5;
+	        trail.position.y = y * gridItem.height - dy * player.trailTexture.height * 0.5;
+	        player.trail = trail;
+	        player.trailContainer.addChild(trail);
+	      }
+
+	      player.trail.width = player.trailTexture.height + (Math.abs(player.position.x - x) + Math.abs(player.position.y - y)) * gridItem.width;
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render(elapsedTime) {
+	      var _this3 = this;
 
 	      _get(Object.getPrototypeOf(TronScreen.prototype), 'render', this).call(this);
 
 	      var time = Date.now() / 1000;
-	      var elapsed = this.lastTime ? time - this.lastTime : 0;
+	      var elapsed = elapsedTime || (this.lastTime ? time - this.lastTime : 0);
 	      this.lastTime = time;
 
 	      if (!this.grid) {
 	        return;
 	      }
+	      if (this.paused) {
+	        return;
+	      }
 	      var gridItem = this.resources.tronGrid.texture;
 
 	      var _loop = function (i) {
-	        var player = _this2.players[i];
+	        var player = _this3.players[i];
 	        if (!player.connected) {
 	          return 'continue';
 	        }
 
 	        var oldX = player.position.x;
 	        var oldY = player.position.y;
-	        player.position.x += player.position.dx * velocity * elapsed;
-	        player.position.y += player.position.dy * velocity * elapsed;
+	        if (!player.died) {
+	          player.position.x += player.position.dx * velocity * elapsed;
+	          player.position.y += player.position.dy * velocity * elapsed;
+	        }
 
+	        var oldJunctionX = Math.round(oldX);
+	        var oldJunctionY = Math.round(oldY);
 	        var junctionX = Math.round(player.position.x);
 	        var junctionY = Math.round(player.position.y);
 
-	        if (player.position.x > junctionX && oldX <= junctionX || player.position.x < junctionX && oldX >= junctionX) {
+	        if (oldJunctionX !== junctionX || oldJunctionY !== junctionY) {
+	          if (_this3.grid[junctionX][junctionY].occupied) {
+	            _this3.playerDied(i);
+	          }
+
+	          _this3.grid[junctionX][junctionY].occupied = true;
+	        }
+
+	        if (!player.died && (player.position.x > junctionX && oldX <= junctionX || player.position.x < junctionX && oldX >= junctionX)) {
 
 	          if (player.lastButton === _Controls.UP) {
 	            player.position.x = junctionX;
 	            player.position.dx = 0;
 	            player.position.dy = -1;
+	            player.trail = null;
+	            player.trailOrigin = _Object$assign({}, player.position);
 	          } else if (player.lastButton === _Controls.DOWN) {
 	            player.position.x = junctionX;
 	            player.position.dx = 0;
 	            player.position.dy = 1;
+	            player.trail = null;
+	            player.trailOrigin = _Object$assign({}, player.position);
 	          }
 	        }
 
-	        if (player.position.y > junctionY && oldY <= junctionY || player.position.y < junctionY && oldY >= junctionY) {
+	        if (!player.died && (player.position.y > junctionY && oldY <= junctionY || player.position.y < junctionY && oldY >= junctionY)) {
 
 	          if (player.lastButton === _Controls.LEFT) {
 	            player.position.y = junctionY;
 	            player.position.dx = -1;
 	            player.position.dy = 0;
+	            player.trail = null;
+	            player.trailOrigin = _Object$assign({}, player.position);
 	          } else if (player.lastButton === _Controls.RIGHT) {
 	            player.position.y = junctionY;
 	            player.position.dx = 1;
 	            player.position.dy = 0;
+	            player.trail = null;
+	            player.trailOrigin = _Object$assign({}, player.position);
 	          }
 	        }
+
+	        _this3.adjustTrail(player, gridItem);
 
 	        var bike = player.bike;
 	        var oldRotation = bike.rotation;
@@ -16118,7 +16304,7 @@
 	            oldRotation -= 2 * Math.PI;
 	          }
 
-	          _this2.animations.addAnimation(1 / velocity, _easing.linear, function (val) {
+	          _this3.animations.addAnimation(1 / velocity, _easing.linear, function (val) {
 	            bike.rotation = val;
 	          }, oldRotation, newRotation);
 	        }
@@ -16137,6 +16323,9 @@
 	    key: 'destroy',
 	    value: function destroy() {
 	      this.manager.players.controls.removeListener('buttonDown', this.handleButtons);
+	      //return this.animations.addAnimation(0.5, val => {
+	      //this.bgContainer.alpha = val;
+	      //}, 1, 0);
 	    }
 	  }]);
 
@@ -16145,6 +16334,76 @@
 
 	exports['default'] = TronScreen;
 	module.exports = exports['default'];
+
+/***/ },
+/* 57 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(58), __esModule: true };
+
+/***/ },
+/* 58 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(59);
+	module.exports = __webpack_require__(33).Object.assign;
+
+/***/ },
+/* 59 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 19.1.3.1 Object.assign(target, source)
+	var $def = __webpack_require__(31);
+
+	$def($def.S + $def.F, 'Object', {assign: __webpack_require__(60)});
+
+/***/ },
+/* 60 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 19.1.2.1 Object.assign(target, source, ...)
+	var $        = __webpack_require__(14)
+	  , toObject = __webpack_require__(61)
+	  , IObject  = __webpack_require__(27);
+
+	// should work with symbols and should have deterministic property order (V8 bug)
+	module.exports = __webpack_require__(34)(function(){
+	  var a = Object.assign
+	    , A = {}
+	    , B = {}
+	    , S = Symbol()
+	    , K = 'abcdefghijklmnopqrst';
+	  A[S] = 7;
+	  K.split('').forEach(function(k){ B[k] = k; });
+	  return a({}, A)[S] != 7 || Object.keys(a({}, B)).join('') != K;
+	}) ? function assign(target, source){ // eslint-disable-line no-unused-vars
+	  var T     = toObject(target)
+	    , $$    = arguments
+	    , $$len = $$.length
+	    , index = 1
+	    , getKeys    = $.getKeys
+	    , getSymbols = $.getSymbols
+	    , isEnum     = $.isEnum;
+	  while($$len > index){
+	    var S      = IObject($$[index++])
+	      , keys   = getSymbols ? getKeys(S).concat(getSymbols(S)) : getKeys(S)
+	      , length = keys.length
+	      , j      = 0
+	      , key;
+	    while(length > j)if(isEnum.call(S, key = keys[j++]))T[key] = S[key];
+	  }
+	  return T;
+	} : Object.assign;
+
+/***/ },
+/* 61 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 7.1.13 ToObject(argument)
+	var defined = __webpack_require__(29);
+	module.exports = function(it){
+	  return Object(defined(it));
+	};
 
 /***/ }
 /******/ ]);

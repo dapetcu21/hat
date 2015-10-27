@@ -44,9 +44,29 @@ export default class GameManager {
     });
   }
 
+  nextLevel() {
+    let game;
+    game = new TronScreen(this, this.mainScreen);
+    this.mainScreen.setScreen(game);
+  }
+
+  endGame(winner) {
+    if (winner !== null) {
+      this.players.players[winner].wins++;
+    }
+    this.gamesLeft--;
+    if (this.gamesLeft) {
+      this.nextLevel();
+    } else {
+      this.players.inGame = false;
+      this.mainScreen.setScreen(new JoinScreen(this, this.mainScreen));
+    }
+  }
+
   startGame() {
-    const tron = new TronScreen(this, this.mainScreen);
-    this.mainScreen.setScreen(tron);
+    this.players.inGame = true;
+    this.gamesLeft = 5;
+    this.nextLevel();
   }
 
   render() {

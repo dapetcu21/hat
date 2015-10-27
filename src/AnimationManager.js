@@ -19,6 +19,8 @@ export class AnimationManager {
       from, to, duration, easing, fun, timeLeft: duration, resolve,
     });
 
+    fun(from);
+
     return promise;
   }
 
