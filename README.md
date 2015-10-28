@@ -13,6 +13,7 @@ This was built during the [UPC – The Challenge][hackaton] hackathon using [Met
 ## How it works
 
 Bring your friends and use your phones as gamepads to play a sequence of 5 fast paced multiplayer games. On Android, the gamepad will also have haptic feedback.
+
 Two game types are currently implemented: the classic Tron light bikes game and a 2-lane obstacle avoidance game.
 
 ## Who built this?
