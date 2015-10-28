@@ -18,10 +18,10 @@ Two game types are currently implemented: the classic Tron light bikes game and 
 
 ## Who built this?
 
-Code: [Marius Petcu](https://github.com/dapetcu21)
-Code: [Anatol Prisăcaru](https://github.com/shark0der)
-Code: [Bogdan Florea](https://github.com/bogdanvf)
-Design: [Gabriel Bucur](https://www.facebook.com/gaby.bucur)
+Code: [Marius Petcu](https://github.com/dapetcu21)  
+Code: [Anatol Prisăcaru](https://github.com/shark0der)  
+Code: [Bogdan Florea](https://github.com/bogdanvf)  
+Design: [Gabriel Bucur](https://www.facebook.com/gaby.bucur)  
 
 [metrological]: https://www.metrological.com/appdevelopers.html
 [hackaton]: http://upcthechallenge.ro/
