@@ -8,7 +8,7 @@ This was built during the [UPC – The Challenge][hackaton] hackathon using [Met
 
 1. Run `npm install`.
 2. Run `webpack`.
-3. Use the project folder as an app within the [Metrological] simulator.
+3. Use the project folder as an app within the [Metrological SDK Simulator][simulator].
 
 ## How it works
 
@@ -24,6 +24,7 @@ Code: [Bogdan Florea](https://github.com/bogdanvf)
 Design: [Gabriel Bucur](https://www.facebook.com/gaby.bucur)  
 
 [metrological]: https://www.metrological.com/appdevelopers.html
+[simulator]: https://github.com/Metrological/maf3-sdk
 [hackaton]: http://upcthechallenge.ro/
 [pixi]: http://www.pixijs.com
 
