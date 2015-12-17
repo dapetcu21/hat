@@ -12,6 +12,7 @@ class AudioManager {
   }
 
   musicStart() {
+    if (!HAS_AUDIO) { return; }
 
     if (!this.audio) {
       this.audio = new Audio(getResource('Sounds/music.ogg'));
@@ -43,6 +44,7 @@ class AudioManager {
   }
 
   load(name) {
+    if (!HAS_AUDIO) { return function () {}; }
     const audio = new Audio(getResource('Sounds/' + name));
     return function () {
       audio.play();

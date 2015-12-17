@@ -28,6 +28,7 @@ var config = {
   plugins: [
     new webpack.DefinePlugin({
       DEBUG: debug,
+      HAS_AUDIO: !!process.env.AUDIO,
     }),
   ],
 };
