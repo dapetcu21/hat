@@ -1,5 +1,6 @@
 import { Container, Sprite, Text, extras } from 'pixi';
 import { linear, easeOutExpo, easeInOutSine, easeInOutExpo, easeInExpo } from 'easing';
+import getResource from '../getResource';
 
 import Screen from './Screen';
 import Audio from '../audio';
@@ -31,12 +32,12 @@ export default class RoadBlockScreen extends Screen {
 
     this.loadResources((loader) => {
 
-      loader.add('roadBlock-false-false', 'Images/road-block-free.png');
-      loader.add('roadBlock-true-false', 'Images/road-block-left.png');
-      loader.add('roadBlock-false-true', 'Images/road-block-right.png');
+      loader.add('roadBlock-false-false', getResource('Images/road-block-free.png'));
+      loader.add('roadBlock-true-false', getResource('Images/road-block-left.png'));
+      loader.add('roadBlock-false-true', getResource('Images/road-block-right.png'));
 
       colors.forEach((v, k) => {
-        loader.add(`car-${k}`, `Images/car-${v}.png`);
+        loader.add(`car-${k}`, getResource(`Images/car-${v}.png`));
       });
 
     }, (resources) => {

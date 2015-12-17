@@ -1,4 +1,5 @@
 import { Sprite, Container, Text, loader } from 'pixi';
+import getResource from './getResource';
 
 const marginHorizontal = 52 / 1366;
 const marginVertical = 40 / 768;
@@ -18,11 +19,11 @@ export default class PlayerBar {
 
     const { width, height } = this.manager.renderer;
 
-    loader.add('avatar0', 'Images/player-red.png');
-    loader.add('avatar1', 'Images/player-green.png');
-    loader.add('avatar2', 'Images/player-blue.png');
-    loader.add('avatar3', 'Images/player-yellow.png');
-    loader.add('avatarInactive', 'Images/player-inactive.png');
+    loader.add('avatar0', getResource('Images/player-red.png'));
+    loader.add('avatar1', getResource('Images/player-green.png'));
+    loader.add('avatar2', getResource('Images/player-blue.png'));
+    loader.add('avatar3', getResource('Images/player-yellow.png'));
+    loader.add('avatarInactive', getResource('Images/player-inactive.png'));
     loader.load((loader, resources) => {
       this.loaded = true;
 

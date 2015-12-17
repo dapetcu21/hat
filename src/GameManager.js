@@ -6,6 +6,7 @@ import JoinScreen from './screens/JoinScreen';
 import TronScreen from './screens/TronScreen';
 import RoadBlockScreen from './screens/RoadBlockScreen';
 import Audio from './audio';
+import getResource from './getResource';
 
 const frameOffsetY = 90 / 1080;
 
@@ -33,7 +34,7 @@ export default class GameManager {
 
     this.playerBar = new PlayerBar(this);
 
-    loader.add('bgFrame', 'Images/frame.png');
+    loader.add('bgFrame', getResource('Images/frame.png'));
     loader.load((_, resources) => {
       const background = new Sprite(resources.bgFrame.texture);
       background.position.y = this.renderer.height * frameOffsetY;
@@ -125,4 +126,3 @@ export default class GameManager {
     this.renderer.render(this.stage);
   }
 }
-

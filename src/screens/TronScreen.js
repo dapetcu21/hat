@@ -1,6 +1,7 @@
 import audio from '../audio';
 import { Container, Sprite, Text, extras } from 'pixi';
 import { linear, easeOutExpo, easeInExpo, easeInOutExpo } from 'easing';
+import getResource from '../getResource';
 
 import Screen from './Screen';
 import { UP, DOWN, LEFT, RIGHT } from '../Controls';
@@ -32,16 +33,16 @@ export default class TronScreen extends Screen {
     const { width, height } = this.manager.renderer;
 
     this.loadResources((loader) => {
-      loader.add('tronGrid', 'Images/tron-grid.png');
-      loader.add('tronBike0', 'Images/bike-red.png');
-      loader.add('tronBike1', 'Images/bike-green.png');
-      loader.add('tronBike2', 'Images/bike-blue.png');
-      loader.add('tronBike3', 'Images/bike-yellow.png');
-      loader.add('tronTrail0', 'Images/trail-red.png');
-      loader.add('tronTrail1', 'Images/trail-green.png');
-      loader.add('tronTrail2', 'Images/trail-blue.png');
-      loader.add('tronTrail3', 'Images/trail-yellow.png');
-      loader.add('tronBikeInactive', 'Images/bike-disabled.png');
+      loader.add('tronGrid', getResource('Images/tron-grid.png'));
+      loader.add('tronBike0', getResource('Images/bike-red.png'));
+      loader.add('tronBike1', getResource('Images/bike-green.png'));
+      loader.add('tronBike2', getResource('Images/bike-blue.png'));
+      loader.add('tronBike3', getResource('Images/bike-yellow.png'));
+      loader.add('tronTrail0', getResource('Images/trail-red.png'));
+      loader.add('tronTrail1', getResource('Images/trail-green.png'));
+      loader.add('tronTrail2', getResource('Images/trail-blue.png'));
+      loader.add('tronTrail3', getResource('Images/trail-yellow.png'));
+      loader.add('tronBikeInactive', getResource('Images/bike-disabled.png'));
     }, resources => {
       this.resources = resources;
 
