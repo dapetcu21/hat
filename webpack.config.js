@@ -3,7 +3,7 @@ var path = require('path');
 
 var debug = process.env.NODE_ENV !== 'production';
 
-module.exports = {
+var config = {
   entry: {
     main: './src/init.js'
   },
@@ -13,7 +13,6 @@ module.exports = {
   },
   module: {
     loaders: [
-      { test: /pixi/, loader: path.join(__dirname, 'src/unfucker.js') },
       { test: /\.jsx?$/, loader: 'babel-loader', exclude: /node_modules|web_modules/ },
     ]
   },
@@ -30,6 +29,15 @@ module.exports = {
     new webpack.DefinePlugin({
       DEBUG: debug,
     }),
-    //new webpack.optimize.UglifyJsPlugin({minimize: true}),
   ],
 };
+
+if (process.env.UNFUCK) {
+  config.module.loaders.push({ test: /pixi/, loader: path.join(__dirname, 'src/unfucker.js') });
+}
+
+if (!debug) {
+  config.plugins.push(new webpack.optimize.UglifyJsPlugin({ minimize: true }));
+}
+
+module.exports = config;
