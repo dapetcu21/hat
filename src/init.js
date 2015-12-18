@@ -1,3 +1,4 @@
+// Shims required by pixi.js
 import _url from 'url-parse';
 window.urlParse = _url;
 import './createElementShim';

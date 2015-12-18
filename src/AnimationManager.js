@@ -1,4 +1,3 @@
-import { each } from 'lodash';
 import { Promise } from 'es6-promise';
 
 export class AnimationManager {
@@ -33,7 +32,9 @@ export class AnimationManager {
     const elapsed = this.lastTime ? time - this.lastTime : 0;
     this.lastTime = time;
 
-    each(this.animations, (anim, key) => {
+    for (let key in this.animations) {
+      const anim = this.animations[key]
+
       anim.timeLeft -= elapsed;
       if (anim.timeLeft <= 0) {
         delete this.animations[key];
@@ -44,6 +45,6 @@ export class AnimationManager {
       const adjusted = anim.from + val * (anim.to - anim.from);
       anim.fun(adjusted, adjusted - anim.lastValue);
       anim.lastValue = adjusted;
-    });
+    }
   }
 }
