@@ -37,7 +37,7 @@ if (process.env.UNFUCK) {
   config.module.loaders.push({ test: /pixi/, loader: path.join(__dirname, 'src/unfucker.js') });
 }
 
-if (!debug) {
+if (!debug && !process.env.NOMINIFY) {
   config.plugins.push(new webpack.optimize.UglifyJsPlugin({ minimize: true }));
 }
 

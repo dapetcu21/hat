@@ -6,9 +6,41 @@ This was built during the [UPC – The Challenge][hackaton] hackathon using [Met
 
 ## How to build it
 
-1. Run `npm install`.
-2. Run `UNFUCK=1 npm run build`.
-3. Use the project folder as an app within the [Metrological SDK Simulator][simulator].
+You should first run `npm install`.
+
+### Build development build
+
+```bash
+webpack
+```
+
+### Build production build
+
+```bash
+NODE_ENV=production webpack
+```
+
+### Build unminified production build
+
+```bash
+NOMINIFY=1 NODE_ENV=production webpack
+```
+
+### The "unfucker"
+
+There's an issue in the Metrological SDK where using `//` inside a string truncates the string and results in a syntax error. We built a workaround for this:
+
+```bash
+UNFUCK=1 webpack
+```
+
+### Build with sound
+```bash
+AUDIO=1 webpack
+```
+
+The build results should be taken from `./Contents`, with or without the `Sounds` folder.
+There's a script that does that already for you. Check out `npm run build`
 
 ## How it works
 
