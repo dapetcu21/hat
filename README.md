@@ -7,7 +7,7 @@ This was built during the [UPC – The Challenge][hackaton] hackathon using [Met
 ## How to build it
 
 1. Run `npm install`.
-2. Run `webpack`.
+2. Run `UNFUCK=1 npm run build`.
 3. Use the project folder as an app within the [Metrological SDK Simulator][simulator].
 
 ## How it works
@@ -34,4 +34,3 @@ Design: [Gabriel Bucur](https://www.facebook.com/gaby.bucur)
 ![screenshot from 2015-10-28 19 48 53](https://cloud.githubusercontent.com/assets/428060/10798547/db94a37c-7db0-11e5-906b-91b072fe407d.png)
 ![screenshot from 2015-10-28 19 49 50](https://cloud.githubusercontent.com/assets/428060/10798548/db967fe4-7db0-11e5-9ff6-d499dbe595b5.png)
 ![screenshot from 2015-10-28 19 49 21](https://cloud.githubusercontent.com/assets/428060/10798549/db96a3f2-7db0-11e5-8c5c-57043c0b68b3.png)
-
