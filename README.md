@@ -39,6 +39,8 @@ UNFUCK=1 webpack
 AUDIO=1 webpack
 ```
 
+### Zip it all up
+
 The build results should be taken from `./Contents`, with or without the `Sounds` folder.
 There's a script that does that already for you. Check out `npm run build`
 
