@@ -1,3 +1,3 @@
 export default function getResource(uri) {
-  return widget.getUrl(uri);
+  return widget.getPath(uri);
 }
