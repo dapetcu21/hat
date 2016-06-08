@@ -28,7 +28,7 @@ NOMINIFY=1 NODE_ENV=production webpack
 
 ### The "unfucker"
 
-There's an issue in the Metrological SDK where using `//` inside a string truncates the string and results in a syntax error. We built a workaround for this:
+There's an issue in the Metrological SDK (more likely in the compiler/minifier, not SDK itself) where using `//` inside a string truncates the string and results in a syntax error. We built a workaround for this:
 
 ```bash
 UNFUCK=1 webpack
@@ -41,8 +41,8 @@ AUDIO=1 webpack
 
 ### Zip it all up
 
-The build results should be taken from `./Contents`, with or without the `Sounds` folder.
-There's a script that does that already for you. Check out `npm run build`
+The build results should be taken from `./ro.hat-app.app.Hat`, with or without the `Contents/Sounds` folder.
+There's a script that does that already for you. Check out `npm run build` and `npm run pack`
 
 ## How it works
 

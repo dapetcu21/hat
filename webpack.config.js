@@ -3,12 +3,30 @@ var path = require('path');
 
 var debug = process.env.NODE_ENV !== 'production';
 
+var plugins = [
+  new webpack.DefinePlugin({
+    DEBUG: debug,
+    HAS_AUDIO: !!process.env.AUDIO,
+  })
+];
+
+if (!debug && !process.env.NOMINIFY) {
+  plugins.push(new webpack.optimize.UglifyJsPlugin({ minimize: true }));
+}
+
+// we're supressing warnings because our transpiled and minified
+// code doesn't play well with metrological's closure compiler
+plugins.push(new webpack.BannerPlugin(
+    ['/**', ' * @fileoverview', ' * @suppress {uselessCode|suspiciousCode}', '*/'].join('\n'),
+    { raw: true, entryOnly: true }
+));
+
 var config = {
   entry: {
     main: './src/init.js'
   },
   output: {
-    path: './Contents/Javascript',
+    path: './ro.hat-app.app.Hat/Contents/Javascript',
     filename: 'init.js',
   },
   module: {
@@ -25,20 +43,11 @@ var config = {
     stage: 0,
     optional: ['runtime']
   },
-  plugins: [
-    new webpack.DefinePlugin({
-      DEBUG: debug,
-      HAS_AUDIO: !!process.env.AUDIO,
-    }),
-  ],
+  plugins: plugins,
 };
 
 if (process.env.UNFUCK) {
   config.module.loaders.push({ test: /pixi/, loader: path.join(__dirname, 'src/unfucker.js') });
-}
-
-if (!debug && !process.env.NOMINIFY) {
-  config.plugins.push(new webpack.optimize.UglifyJsPlugin({ minimize: true }));
 }
 
 module.exports = config;

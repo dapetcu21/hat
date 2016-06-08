@@ -1,5 +1,5 @@
 node_modules
 .DS_Store
 .*.sw*
-/Contents/Javascript/init.js
+/ro.hat-app.app.Hat/Contents/Javascript/init.js
 /hat.zip
